@@ -24,5 +24,4 @@ func New() *CompanyInfoStore {
 }
 
 func AddNewInfo() {
-    m
 }

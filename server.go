@@ -1,4 +1,4 @@
-package siteWrapper
+package CompanyInfo
 
 import (
 	"context"
@@ -10,7 +10,7 @@ type Server struct {
 	httpServer *http.Server
 }
 
-func (s *Server)Run( port string) error {
+func (s *Server)Run( port string, mux *http.ServeMux) error {
 	s.httpServer = &http.Server{
 		Addr: ":" + port,
 		MaxHeaderBytes: http.DefaultMaxHeaderBytes,

@@ -1,16 +1,22 @@
 package main
 
 import (
-	"github.com/kalunik/siteWrapper"
+	"github.com/kalunik/companyInfo"
+	"github.com/kalunik/companyInfo/internal"
 	"log"
 )
 
 func main() {
 
-	server := new(siteWrapper.httpServer)
-	if err == server.Run("8080") {
-		log.Fatalln(err)
+	mux := internal.NewRouter()
+
+	server := new(companyInfo.Server)
+	err := server.Run("8080", mux)
+	if err != nil {
+		log.Fatalf("error occured while running http server: %s\n", err.Error())
 	}
+
+
 
 	//
 	//server := &NewCompanyInfoServer()
