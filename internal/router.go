@@ -1,12 +1,17 @@
 package internal
 
 import (
-	"net/http"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/kalunik/companyInfo/pkg/handler"
 )
 
-func NewRouter(server *http.Server) {
-	mux := http.NewServeMux()
+func NewRouter() *chi.Mux {
 
-	mux.HandleFunc("/taxid/", taxHandler)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 
+	r.Get("/{taxId}", handler.TaxHandler)
+
+	return r
 }

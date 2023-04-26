@@ -3,42 +3,35 @@ package parse
 import (
 	"fmt"
 	"github.com/gocolly/colly/v2"
+	"log"
 )
 
-type CompanyInfo struct {
-	TaxId   string
-	KPP     string
-	Name    string
-	CeoName string
+type Scrapper struct {
+	collector *colly.Collector
 }
 
-func ScrapeRusprofile(taxId string) {
-	scrape("https://www.rusprofile.ru/search?query=" + taxId) //3327848813
-}
+func (c *Scrapper) scrapeSite(targetURL string) []string {
+	c.collector = colly.NewCollector()
 
-func scrape(url string) *CompanyInfo {
-	c := colly.NewCollector()
-
-	company := new(CompanyInfo)
-	// Find and visit all links
-	c.OnHTML("div[class=company-name],,", func(e *colly.HTMLElement) {
-		company.Name = e.Text
+	tagsList := []string{
+		"div[class=company-name]",
+		"span[id=clip_inn]",
+		"span[id=clip_kpp]",
+		"span[class=company-info__text] > a > span",
+	}
+	collectedData := make([]string, 0, len(tagsList))
+	for _, tag := range tagsList {
+		c.collector.OnHTML(tag, func(e *colly.HTMLElement) {
+			fmt.Println(e.Text)
+			collectedData = append(collectedData, e.Text)
+		})
+	}
+	c.collector.OnRequest(func(r *colly.Request) {
+		log.Println("Visiting", r.URL)
 	})
-
-	c.OnHTML("span[id=clip_inn]", func(e *colly.HTMLElement) {
-		company.TaxId = e.Text
-	})
-	c.OnHTML("span[id=clip_kpp]", func(e *colly.HTMLElement) {
-		company.KPP = e.Text
-	})
-	c.OnHTML("span[class=company-info__text] > a > span", func(e *colly.HTMLElement) {
-		company.CeoName = e.Text
-	})
-
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
-	})
-
-	c.Visit(url)
-	return company
+	err := c.collector.Visit(targetURL)
+	if err != nil {
+		log.Fatalln("Collecting failed while scrapping site", err.Error())
+	}
+	return collectedData
 }
