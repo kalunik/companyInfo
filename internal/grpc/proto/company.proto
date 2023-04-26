@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package company;
+
+option go_package = "internal/grpc/company";
+
+service Company {
+  rpc GetInfo(Request) returns (Response) {}
+}
+
+message Request {
+  string tax_id = 1;
+}
+
+message Response {
+  string tax_id = 1;
+  string kpp = 2;
+  string name = 3;
+  string ceo_name = 4;
+}

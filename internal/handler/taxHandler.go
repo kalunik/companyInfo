@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"github.com/kalunik/companyInfo/pkg/parse"
+	"github.com/kalunik/companyInfo/internal/parse"
 	"log"
 	"net/http"
 )

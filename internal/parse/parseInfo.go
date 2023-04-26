@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"fmt"
 	"log"
 	"net/url"
 )
@@ -22,7 +21,6 @@ func ScrapeRusprofile(taxId string) *Company {
 
 	s := new(Scrapper)
 	data := s.scrapeSite(targetURL.String()) //3327848813
-	fmt.Println(data)
 
 	company := new(Company)
 	company.Unmarshal(data)
