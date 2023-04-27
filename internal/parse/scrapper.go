@@ -14,9 +14,9 @@ func (c *Scrapper) scrapeSite(targetURL string) []string {
 	c.collector = colly.NewCollector()
 
 	tagsList := []string{
-		"div[class=company-name]",
 		"span[id=clip_inn]",
 		"span[id=clip_kpp]",
+		"div[class=company-name]",
 		"span[class=company-info__text] > a > span",
 	}
 	collectedData := make([]string, 0, len(tagsList))
