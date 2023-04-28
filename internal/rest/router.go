@@ -8,7 +8,7 @@ import (
 func NewRouter() *chi.Mux {
 
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	r.Use(middleware.Logger, middleware.Heartbeat("/ping"))
 
 	r.Get("/{taxId}", TaxHandler)
 

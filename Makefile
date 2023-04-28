@@ -7,4 +7,7 @@ all:
 	@go run $(MAIN)
 
 proto:
-	protoc -I $(PROTO_PATH) company.proto --go_out=$(PROTO_OUT) --go-grpc_out=$(PROTO_OUT)
+	protoc -I $(PROTO_PATH) company.proto \
+	--go_out=$(PROTO_OUT) --go-grpc_out=$(PROTO_OUT)
+
+#	--swagger_out=allow_merge=true,merge_file_name=company:. \
