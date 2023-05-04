@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	go func() {
 		server := new(internal.HttpServer)
 		mux := rest.NewRouter()

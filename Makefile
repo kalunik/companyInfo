@@ -1,13 +1,25 @@
-
 MAIN = cmd/api/main.go
 PROTO_PATH = internal/grpc/proto
-PROTO_OUT = .
+GENERATED_PATH = internal/grpc/proto
 
 all:
 	@go run $(MAIN)
 
-proto:
-	protoc -I $(PROTO_PATH) company.proto \
-	--go_out=$(PROTO_OUT) --go-grpc_out=$(PROTO_OUT)
+googleapi:
+	mkdir -p $(PROTO_PATH)/google/api/
+	curl --request GET -sL \
+	     --url 'https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto'\
+	     --output $(PROTO_PATH)/google/api/annotations.proto
+	curl --request GET -sL \
+	     --url 'https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto'\
+	     --output $(PROTO_PATH)/google/api/http.proto
 
-#	--swagger_out=allow_merge=true,merge_file_name=company:. \
+proto:
+	protoc \
+	--go_out=$(GENERATED_PATH) \
+	--go-grpc_out=$(GENERATED_PATH) \
+	--grpc-gateway_out=$(GENERATED_PATH) \
+	--openapiv2_out=$(GENERATED_PATH) \
+	--proto_path=$(PROTO_PATH) company.proto
+
+.PHONY : all proto googleapi

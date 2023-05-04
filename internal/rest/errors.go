@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bytes"
+	"errors"
 	"strconv"
 )
 
@@ -21,14 +22,13 @@ func (e requestError) Error() string {
 	return result.String()
 }
 
-func (e *requestError) ErrorByCode() string {
+func (e *requestError) setError() {
 	switch e.errorCode {
 	case wrongLenTaxId:
-		return "Requested taxId should have length between 10 and 12"
+		e.Err = errors.New("Requested taxId should have length between 10 and 12")
 	case invalidTaxId:
-		return "Requested taxId not found. Is it correct?"
+		e.Err = errors.New("Requested taxId not found. Is it correct?")
 	}
-	return ""
 }
 
 func (e *requestError) ErrorJson() []byte {
@@ -36,7 +36,8 @@ func (e *requestError) ErrorJson() []byte {
 	jsonResponse.WriteString(`{"errorCode": "`)
 	jsonResponse.WriteString(strconv.Itoa(e.errorCode))
 	jsonResponse.WriteString(`", "errorDetails" : "`)
-	jsonResponse.WriteString(e.ErrorByCode())
+	e.setError()
+	jsonResponse.WriteString(e.Error())
 	jsonResponse.WriteString(`"}`)
 	return jsonResponse.Bytes()
 }

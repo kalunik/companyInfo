@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-chi/chi/v5"
 	"github.com/kalunik/companyInfo/internal/grpc/company"
+	gen "github.com/kalunik/companyInfo/internal/grpc/proto/generated"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -21,18 +22,21 @@ type GrpcServer struct {
 }
 
 func (s *GrpcServer) Run() {
-	listen, err := net.Listen("tcp", "127.0.0.1:4242")
+	grpcServHost := "127.0.0.1"
+	grpcServPort := "4242"
+	servAddress := net.JoinHostPort(grpcServHost, grpcServPort)
+	listen, err := net.Listen("tcp", servAddress)
 	if err != nil {
-		log.Fatalln("Listen error", err.Error())
-
+		log.Fatalln("Failed to listen:", err.Error())
 	}
+
 	s.grpc = grpc.NewServer()
-	company.RegisterCompanyServer(s.grpc, &company.CompanyGRPC{})
+	gen.RegisterCompanyServer(s.grpc, &company.CompanyGRPC{})
 
-	err = s.grpc.Serve(listen)
-	if err != nil {
-		log.Fatalln("Error while run GRPC server", err.Error())
-	}
+	log.Println("Serving gRPC on", servAddress)
+	go func() {
+		log.Fatalln(s.grpc.Serve(listen))
+	}()
 }
 
 func (s *GrpcServer) Shutdown(ctx context.Context) {
