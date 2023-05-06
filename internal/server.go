@@ -13,12 +13,19 @@ import (
 )
 
 type Server struct {
-	Http *HttpServer
 	Grpc *GrpcServer
+	Http *HttpServer
 }
 
 type GrpcServer struct {
 	grpc *grpc.Server
+}
+
+func (s *Server) NewServer() *Server {
+	return &Server{
+		Grpc: &GrpcServer{},
+		Http: &HttpServer{},
+	}
 }
 
 func (s *GrpcServer) Run() {
@@ -34,9 +41,10 @@ func (s *GrpcServer) Run() {
 	gen.RegisterCompanyServer(s.grpc, &company.CompanyGRPC{})
 
 	log.Println("Serving gRPC on", servAddress)
-	go func() {
-		log.Fatalln(s.grpc.Serve(listen))
-	}()
+	err = s.grpc.Serve(listen)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func (s *GrpcServer) Shutdown(ctx context.Context) {
