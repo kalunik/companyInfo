@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"fmt"
 	"github.com/gocolly/colly/v2"
 	"log"
 )
@@ -22,7 +21,6 @@ func (c *Scrapper) scrapeSite(targetURL string) []string {
 	collectedData := make([]string, 0, len(tagsList))
 	for _, tag := range tagsList {
 		c.collector.OnHTML(tag, func(e *colly.HTMLElement) {
-			fmt.Println(e.Text)
 			collectedData = append(collectedData, e.Text)
 		})
 	}
