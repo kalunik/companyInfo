@@ -4,3 +4,6 @@
 - _custom jsonUnmarshaller_ is way better in case of main json struct has slice inside.
   It would be easier to get json attributes in slice. 
   [Article](https://jhall.io/posts/go-json-tricks-array-as-structs/) with good examples.
+- 1st version had two servers Rest w/h chi-routing and gRPC. They worked concurrently. 
+  2nd version has gRPC server and gateway for RestApi.
+  Dial's WithBlock option allow to wait when gRPC-server will up.
